@@ -1,0 +1,8 @@
+---
+- name: Install Emacs
+  nix: name=emacs state=present
+
+- name: Emacs dotfiles
+  command: stow -R emacs
+  args:
+    chdir: ~/.dotfiles

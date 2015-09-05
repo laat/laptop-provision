@@ -1,0 +1,30 @@
+---
+- name: clone dotfiles
+  git: repo=git@github.com:laat/dotfiles.git 
+       dest=~/.dotfiles
+       accept_hostkey=yes
+
+- name: stat profile
+  stat: path={{ ansible_env.HOME }}/.profile
+  register: profile
+
+- name: move .profile to .backup
+  command: bash -c "mkdir -p ~/.backup && mv ~/.profile ~/.backup" 
+  when: profile.stat.islnk is defined and profile.stat.islnk == False # exists, not a symlink
+
+- name: stat bashrc
+  stat: path={{ ansible_env.HOME }}/.bashrc
+  register: bashrc
+
+- name: move .bashrc to .backup
+  command: bash -c "mkdir -p ~/.backup && mv ~/.bashrc ~/.backup" 
+  when: bashrc.stat.islnk is defined and bashrc.stat.islnk == False # exists, not a symlink
+
+- name: base dotfiles
+  command: stow -R {{item}}
+  args:
+    chdir: ~/.dotfiles
+  with_items:
+  - nix
+  - base
+  - bash

@@ -1,0 +1,14 @@
+---
+- hosts: local
+  tasks:
+    - name: install nix
+      command: bash -c "curl https://nixos.org/nix/install | sh"
+      args:
+        creates: /nix
+
+- hosts: local
+  roles:
+  - base
+  - zsh
+  - spotify
+  - dev-tools

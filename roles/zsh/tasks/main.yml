@@ -1,0 +1,9 @@
+---
+- name: Install ZSH
+  apt: pkg=zsh state=present
+  sudo: yes
+
+- name: dotfiles
+  command: stow -R zsh
+  args:
+    chdir: ~/.dotfiles
