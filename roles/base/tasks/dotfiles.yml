@@ -28,3 +28,6 @@
   - nix
   - base
   - bash
+  - vim
+  - wget
+  - screen

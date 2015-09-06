@@ -10,5 +10,12 @@
      - editorconfig
   sudo: yes
 
+- name: Devtools dotfiles
+  command: stow -R {{item}}
+  args:
+    chdir: ~/.dotfiles
+  with_items:
+    - git
+
 - include: node.yml
 - include: emacs.yml
