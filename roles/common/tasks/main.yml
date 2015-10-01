@@ -1,0 +1,75 @@
+---
+- name: install common utils
+  nix: name={{item}} state=present
+  with_items:
+     - git
+     - ansible
+     - curl
+     - wget
+     - screen
+     - tree
+     - silver-searcher
+     - zsh
+  tags: [package, common]
+
+- name: install common utils
+  apt: pkg={{item}} state=latest
+  with_items:
+    - vim
+    - apcalc
+    - bc
+    - par
+    - editorconfig
+    - i3
+    - i3status
+    - compton
+    - xbacklight
+    - suckless-tools
+    - rxvt-unicode-256color
+    - chromium
+    - youtube-dl
+    - xbacklight
+  sudo: yes
+  tags: [package, common]
+
+- name: dotfiles common
+  command: stow -R --no-folding {{item}}
+  args:
+    chdir: ~/.dotfiles
+  with_items:
+    - git
+    - wget
+    - vim
+    - screen
+    - X
+    - i3
+    - urxvt
+    - zsh
+  tags: [dotfiles, common]
+
+- name: install flash
+  apt: pkg=pepperflashplugin-nonfree state=latest
+  notify:
+    - update-pepperflashplugin-nonfree install
+  tags: [configuration, common]
+
+- name: set urxvt as default x-terminal-emulator
+  alternatives: name=x-terminal-emulator path=/usr/bin/urxvt
+  sudo: yes
+  tags: [configuration, common]
+
+- name: set chromium as default browser
+  alternatives: name=x-www-browser path=/usr/bin/chromium
+  sudo: yes
+  tags: [configuration, common]
+
+- name: set xft dmenu
+  alternatives: name=dmenu path=/usr/bin/dmenu.xft
+  sudo: yes
+  tags: [configuration, common]
+
+# TODO: playerctl nix-expression?
+# HIDPI
+# /etc/X11/xorg.conf.d/90-monitor.conf
+# /etc/grub.d/42_resolution
+# ~/.config/dotfiles/xresources/hidpi.xresources

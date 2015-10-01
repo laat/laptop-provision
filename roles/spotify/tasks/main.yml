@@ -2,6 +2,7 @@
 - name: Add Spotify Key
   apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=D2C19886 
   sudo: yes
+  tags: [package, spotify]
 
 - name: Add Spotify APT repository
   apt_repository:
@@ -9,26 +10,31 @@
     state: 'present'
     update_cache: 'yes'
   sudo: yes
+  tags: [package, spotify]
 
 - name: Check if libgcrypt11 is installed
   command: dpkg-query -W libgcrypt11
   register: libgcrypt11_check_deb
   failed_when: libgcrypt11_check_deb.rc > 1
   changed_when: libgcrypt11_check_deb.rc == 1
+  tags: [package, spotify]
 
 - name: Download libgcrypt11
   get_url: 
     url="http://security.debian.org/debian-security/pool/updates/main/libg/libgcrypt11/libgcrypt11_1.5.0-5+deb7u3_amd64.deb"
     dest="/home/{{ ansible_env.USER }}/Downloads/libgcrypt11_1.5.0-5+deb7u3_amd64.deb"
   when: libgcrypt11_check_deb.rc == 1 
+  tags: [package, spotify]
 
 - name: Install libgcrypt11
   apt: deb="/home/{{ ansible_env.USER }}/Downloads/libgcrypt11_1.5.0-5+deb7u3_amd64.deb"
   sudo: true
   when: libgcrypt11_check_deb.rc == 1
+  tags: [package, spotify]
 
 - name: install Spotify
   apt: pkg={{item}} state=latest
   with_items:
     - spotify-client
   sudo: yes
+  tags: [package, spotify]

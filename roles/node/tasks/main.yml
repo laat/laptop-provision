@@ -1,0 +1,38 @@
+---
+- name: Add Docker Key
+  apt_key: keyserver=keys.gnupg.net id=68576280
+  sudo: yes
+  tags: [package, node]
+
+- name: Add NodeJS APT repository
+  apt_repository:
+    repo: 'deb https://deb.nodesource.com/node_4.x sid main'
+    state: 'present'
+    update_cache: 'yes'
+  sudo: yes
+  tags: [package, node]
+
+- name: install node
+  apt: pkg=nodejs state=latest
+  sudo: yes
+  tags: [package, node]
+
+
+- name: install node dev-tools
+  npm: name={{item}} state=present global=yes
+  with_items:
+  - gulp
+  - jshint
+  - js-beautify
+  sudo: yes
+  tags: [package, node]
+
+## Works badly with npm install -g
+#- name: install node
+#  nix: name=nodejs state=present
+
+## downloads each time
+#- name: Add NodeJS PGP key
+#  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key state=present
+#  sudo: yes
+#  tags: [package, node, dev-tools]

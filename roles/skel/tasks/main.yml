@@ -1,33 +1,40 @@
 ---
+- name: install stow
+  nix:  name=stow state=present
+  tags: [package, skel]
+
 - name: clone dotfiles
   git: repo=git@github.com:laat/dotfiles.git 
        dest=~/.dotfiles
        accept_hostkey=yes
+  tags: [dotfiles, skel]
 
 - name: stat profile
   stat: path={{ ansible_env.HOME }}/.profile
   register: profile
+  tags: [dotfiles, skel]
 
 - name: move .profile to .backup
   command: bash -c "mkdir -p ~/.backup && mv ~/.profile ~/.backup" 
   when: profile.stat.islnk is defined and profile.stat.islnk == False # exists, not a symlink
+  tags: [dotfiles, skel]
 
 - name: stat bashrc
   stat: path={{ ansible_env.HOME }}/.bashrc
   register: bashrc
+  tags: [dotfiles, skel]
 
 - name: move .bashrc to .backup
   command: bash -c "mkdir -p ~/.backup && mv ~/.bashrc ~/.backup" 
   when: bashrc.stat.islnk is defined and bashrc.stat.islnk == False # exists, not a symlink
+  tags: [dotfiles, skel]
 
 - name: base dotfiles
-  command: stow -R {{item}}
+  command: stow -R --no-folding {{item}}
   args:
     chdir: ~/.dotfiles
   with_items:
+  - stow
+  - skel
   - nix
-  - base
-  - bash
-  - vim
-  - wget
-  - screen
+  tags: [dotfiles, skel]

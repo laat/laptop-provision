@@ -1,0 +1,10 @@
+---
+- name: install virtualbox
+  apt: name=virtualbox state=latest
+  sudo: yes
+  tags: [package, virtualbox]
+
+- name: install vagrant
+  apt: name=vagrant state=latest
+  sudo: yes
+  tags: [package, virtualbox, vagrant]

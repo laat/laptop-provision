@@ -6,10 +6,16 @@
       args:
         creates: /nix
 
+    - name: install HTTPS apt
+      apt: pkg=apt-transport-https state=latest
+      sudo: yes
+
 - hosts: local
   roles:
-  - base
-  - zsh
+  - skel
+  - common
   - spotify
-  - laat-de
-  - dev-tools
+  - java8
+  - node
+  - emacs
+  - docker

@@ -1,0 +1,26 @@
+---
+- name: Install Emacs
+  nix: name=emacs state=present
+  tags: [package, emacs]
+
+- name: Emacs dotfiles
+  command: stow -R emacs
+  args:
+    chdir: ~/.dotfiles
+  tags: [dotfiles, emacs]
+
+- name: Check if Emacs is enabled in Systemd
+  command: systemctl --user is-active emacs.service
+  register: emacs
+  ignore_errors: True
+  tags: [service, emacs]
+
+- name: Reload systemd
+  command: systemctl --user daemon-reload
+  when: emacs|failed
+  tags: [service, emacs]
+
+- name: Start emacs service
+  command: systemctl --user start emacs.service
+  when: emacs|failed
+  tags: [service, emacs]
